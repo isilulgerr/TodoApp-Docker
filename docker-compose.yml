@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  # MongoDB Service
+  mongo-db:
+    image: mongo:latest
+    container_name: mongodb_container
+    ports:
+      - "27017:27017"
+    volumes:
+      - todo-data:/data/db # For data persistence
+
+  # Our Node.js API Service
+  todo-api:
+    build: .
+    container_name: node_api_container
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGO_URI=mongodb://mongo-db:27017/tododb
+    depends_on:
+      - mongo-db # Ensure the database starts first
+
+volumes:
+  todo-data: # Persistent data area managed by Docker
